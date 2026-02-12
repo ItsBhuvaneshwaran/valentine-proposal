@@ -145,7 +145,7 @@
 <body>
 
     <div class="container" id="container">
-        <h1>Will you be my Valentine? ❤️</h1>
+        <h1>Will You Be My Valentine? ❤️</h1>
 
         <video id="valentineVideo" src="asking.mp4" autoplay loop muted playsinline></video>
 
@@ -207,8 +207,15 @@
 
         yesBtn.addEventListener("mouseover", moveYesButton);
 
+        /* ✅ MOBILE FIX */
         yesBtn.addEventListener("touchstart", (e) => {
             e.preventDefault();
+
+            if (moveCount >= 6) {
+                yesBtn.click();  // force final click
+                return;
+            }
+
             moveYesButton();
         });
 
@@ -245,7 +252,6 @@
             }
         });
     </script>
-
 </body>
 
 </html>
