@@ -145,7 +145,7 @@
 <body>
 
     <div class="container" id="container">
-        <h1>Will You Be My Valentine? ❤️</h1>
+        <h1>Will you be my Valentine? ❤️</h1>
 
         <video id="valentineVideo" src="asking.mp4" autoplay loop muted playsinline></video>
 
@@ -166,6 +166,7 @@
         const container = document.getElementById("container");
 
         let moveCount = 0;
+        let finished = false;
 
         /* background hearts */
         for (let i = 0; i < 15; i++) {
@@ -189,8 +190,26 @@
             container.appendChild(heart);
         }
 
-        /* YES movement */
-        function moveYesButton() {
+        function showSuccess() {
+            if (finished) return;
+            finished = true;
+
+            result.innerHTML = "<div class='success'>Yayyyy ❤️ See you on date 😍</div>";
+
+            video.src = "accepted.mp4";
+            video.play();
+
+            noBtn.style.opacity = "0";
+            noBtn.style.pointerEvents = "none";
+
+            yesBtn.style.left = "50%";
+            yesBtn.style.top = "35px";
+            yesBtn.style.transform = "translateX(-50%) scale(1.2)";
+        }
+
+        function handleYesInteraction() {
+            if (finished) return;
+
             if (moveCount < 6) {
                 moveCount++;
 
@@ -202,39 +221,22 @@
 
                 yesBtn.style.left = x + "px";
                 yesBtn.style.top = y + "px";
+            } else {
+                showSuccess();
             }
         }
 
-        yesBtn.addEventListener("mouseover", moveYesButton);
+        /* desktop hover */
+        yesBtn.addEventListener("mouseover", handleYesInteraction);
 
-        /* ✅ MOBILE FIX */
+        /* mobile tap */
         yesBtn.addEventListener("touchstart", (e) => {
             e.preventDefault();
-
-            if (moveCount >= 6) {
-                yesBtn.click();  // force final click
-                return;
-            }
-
-            moveYesButton();
+            handleYesInteraction();
         });
 
-        /* YES clicked */
-        yesBtn.addEventListener("click", () => {
-            if (moveCount >= 6) {
-                result.innerHTML = "<div class='success'>Yayyyy ❤️ See you on date 😍</div>";
-
-                video.src = "accepted.mp4";
-                video.play();
-
-                noBtn.style.opacity = "0";
-                noBtn.style.pointerEvents = "none";
-
-                yesBtn.style.left = "50%";
-                yesBtn.style.top = "35px";
-                yesBtn.style.transform = "translateX(-50%) scale(1.2)";
-            }
-        });
+        /* desktop click */
+        yesBtn.addEventListener("click", handleYesInteraction);
 
         /* NO clicked */
         noBtn.addEventListener("click", () => {
@@ -252,6 +254,7 @@
             }
         });
     </script>
+
 </body>
 
 </html>
