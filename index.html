@@ -94,14 +94,18 @@
         #yes {
             background: #ff2e63;
             color: white;
-            left: 10%;
+            right: 10%;
+            /* moved to right */
+            left: auto;
             top: 35px;
         }
 
         #no {
             background: white;
             color: #ff2e63;
-            right: 10%;
+            left: 10%;
+            /* moved to left */
+            right: auto;
             top: 35px;
         }
 
@@ -145,7 +149,7 @@
 <body>
 
     <div class="container" id="container">
-        <h1>Will you be my Valentine? ❤️</h1>
+        <h1>Will You Be My Valentine? ❤️</h1>
 
         <video id="valentineVideo" src="asking.mp4" autoplay loop muted playsinline></video>
 
@@ -165,7 +169,6 @@
         const area = document.getElementById("btnArea");
         const container = document.getElementById("container");
 
-        let moveCount = 0;
         let finished = false;
 
         /* background hearts */
@@ -207,51 +210,37 @@
             yesBtn.style.transform = "translateX(-50%) scale(1.2)";
         }
 
-        function handleYesInteraction() {
+        /* YES → always works */
+        yesBtn.addEventListener("click", showSuccess);
+
+        /* function to move NO button */
+        function moveNo() {
             if (finished) return;
 
-            if (moveCount < 6) {
-                moveCount++;
+            const maxX = area.clientWidth - noBtn.clientWidth;
+            const maxY = area.clientHeight - noBtn.clientHeight;
 
-                const maxX = area.clientWidth - yesBtn.clientWidth;
-                const maxY = area.clientHeight - yesBtn.clientHeight;
+            const x = Math.random() * maxX;
+            const y = Math.random() * maxY;
 
-                const x = Math.random() * maxX;
-                const y = Math.random() * maxY;
-
-                yesBtn.style.left = x + "px";
-                yesBtn.style.top = y + "px";
-            } else {
-                showSuccess();
-            }
+            noBtn.style.left = x + "px";
+            noBtn.style.top = y + "px";
+            noBtn.style.right = "auto";
         }
 
         /* desktop hover */
-        yesBtn.addEventListener("mouseover", handleYesInteraction);
+        noBtn.addEventListener("mouseover", moveNo);
 
-        /* mobile tap */
-        yesBtn.addEventListener("touchstart", (e) => {
+        /* mobile touch */
+        noBtn.addEventListener("touchstart", (e) => {
             e.preventDefault();
-            handleYesInteraction();
+            moveNo();
         });
 
-        /* desktop click */
-        yesBtn.addEventListener("click", handleYesInteraction);
-
-        /* NO clicked */
-        noBtn.addEventListener("click", () => {
-            result.innerHTML = "<div class='success'>No ah? Try again 😜</div>";
-
-            for (let i = 0; i < 25; i++) {
-                const heart = document.createElement("div");
-                heart.innerHTML = "💖";
-                heart.className = "fall";
-                heart.style.left = Math.random() * 100 + "vw";
-                heart.style.fontSize = (Math.random() * 20 + 15) + "px";
-                document.body.appendChild(heart);
-
-                setTimeout(() => heart.remove(), 2000);
-            }
+        /* if user somehow clicks NO */
+        noBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            moveNo();
         });
     </script>
 
